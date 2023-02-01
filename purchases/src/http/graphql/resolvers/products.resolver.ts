@@ -7,7 +7,7 @@ import { CreateProductInput } from '../inputs/create-product-input';
 
 import { Product } from '../models/product';
 
-@Resolver('test')
+@Resolver(() => Product)
 export class ProductsResolver {
   constructor(private productsService: ProductsService) {}
 
