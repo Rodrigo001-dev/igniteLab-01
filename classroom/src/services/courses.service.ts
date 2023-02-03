@@ -4,6 +4,7 @@ import slugify from 'slugify';
 import { PrismaService } from '../database/prisma/prisma.service';
 
 interface CreateCourseParams {
+  slug?: string;
   title: string;
 }
 
@@ -19,9 +20,14 @@ export class CoursesService {
     return await this.prisma.course.findUnique({ where: { id } });
   }
 
-  async createCourse({ title }: CreateCourseParams) {
-    const slug = slugify(title, { lower: true });
+  async getCourseBySlug(slug: string) {
+    return await this.prisma.course.findUnique({ where: { slug } });
+  }
 
+  async createCourse({
+    title,
+    slug = slugify(title, { lower: true }),
+  }: CreateCourseParams) {
     const courseAlreadyExists = await this.prisma.course.findUnique({
       where: {
         slug,
@@ -29,10 +35,10 @@ export class CoursesService {
     });
 
     if (courseAlreadyExists) {
-      throw new Error('Couse already exists');
+      throw new Error('Course already exists');
     }
 
-    return await this.prisma.course.create({
+    return this.prisma.course.create({
       data: {
         title,
         slug,

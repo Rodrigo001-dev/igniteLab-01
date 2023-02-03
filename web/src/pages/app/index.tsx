@@ -1,5 +1,9 @@
 import { GetServerSideProps } from "next";
-import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import {
+  getAccessToken,
+  getSession,
+  withPageAuthRequired,
+} from "@auth0/nextjs-auth0";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Home() {
@@ -16,4 +20,12 @@ export default function Home() {
 
 // o withPageAuthRequired vai verificar se o usuário está autenticado e se não
 // estiver autenticado ele vai ser redirecionado para o login
-export const getServerSideProps: GetServerSideProps = withPageAuthRequired();
+export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
+  getServerSideProps: async ({ req, res }) => {
+    console.log(await getAccessToken(req, res));
+
+    return {
+      props: {},
+    };
+  },
+});
